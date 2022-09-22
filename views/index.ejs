@@ -1,0 +1,47 @@
+<% include partials/header %>
+<% include partials/navbar1 %>
+ <div class="container">
+    <h3><%= title %></h3>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <% if (!locals.page) { %>
+            <th>Section</th>
+            <% } %> 
+        </tr>
+    </thead>
+    <tbody>
+        <% rows.forEach(function(row){ %>
+            <tr>
+
+                <td>
+                    <%= row.upload_date.substring(0,10) %>
+                </td>
+                <td>
+                    <a href="<%= row.letterlink%>" target="_blank">
+                        <%= row.subject%>
+                    </a>
+                </td>
+                <% if (!locals.page) { %>
+                <td>
+                    <%= row.uploadSection %>
+                </td>
+                <% } %> 
+            </tr>
+            <%})%>
+    </tbody>
+    
+</table>
+
+</div>
+<% include partials/footerscripts %>
+<script>
+   $(document).ready(function () {
+       $('#example').DataTable({
+        order: [[0, 'desc']],
+       });
+   });
+</script>
+<% include partials/footer %>

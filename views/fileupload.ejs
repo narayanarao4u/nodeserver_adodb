@@ -1,0 +1,92 @@
+<% include partials/header %>
+<% include partials/navbar1 %>
+ <div class="container">
+  
+      <div class="row pt-5">
+        <div class="col-md-10 mx-auto">
+            <div class="card rounded-0">
+                <div class="card-header">
+                    <h3 class="mb-0">Letter Upload</h3>
+                </div>
+                <div class="card-body">
+                    <form  class="form" method="post" action="/fileupload" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text"  name="subject" class="form-control rounded-0"  maxlength="90" required = false>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Letter No</label>
+                            <div class="row">
+                                <div class="col-9">
+                                    <input type="text"  class="form-control rounded-0"   required = false  maxlength="45"
+                                    name="letterNo" placeholder="letter No">
+                                </div>
+                                <div class="col-3">
+                                    <input type="date" class="form-control rounded-0" required = false 
+                                   name="letterDt" >
+    
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="form-group">
+                            <label for="">Letter Uploading Section</label>
+                            <div class="row">
+                                <div class="col-4">
+                                    <input type="text"  class="form-control rounded-0" required = false 
+                                    name="section" placeholder="Section Name" list="sections">
+                                    <datalist id="sections">
+                                        <option value="Admin">
+                                        <option value="Operation">
+                                        <option value="EPR">
+                                        <option value="General">
+                                        <option value="Planning&Estates">
+                                        <option value="OtherSections">
+                                      </datalist>
+                                </div>
+                                <div class="col-8">
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="uploadType" name="uploadType" value="letter" checked>
+                                        <label class="custom-control-label" for="uploadType">Letter Only</label>
+                                      </div>
+                                      <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="uploadType2" name="uploadType" value="page">
+                                        <label class="custom-control-label" for="uploadType2">Section Page Only</label>
+                                      </div>
+                                      <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input" id="uploadType3" name="uploadType" value="both">
+                                        <label class="custom-control-label" for="uploadType3">Both Letters & Section page</label>
+                                      </div>
+                                </div>
+                                
+                            </div>   
+                            
+                        
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile" name="customFile" required = false >
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                         
+                        <input type="submit" name="submit" id="" class="btn btn-success float-right mt-1" value="Upload">
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Add the following code if you want the name of the file appear on select
+    $(".custom-file-input").on("change", function() {
+      var fileName = $(this).val().split("\\").pop();
+      $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+    </script>
+
+<% include partials/footerscripts %>
+<% include partials/footer %>
+
+

@@ -1,0 +1,9 @@
+
+.container {
+	background-image: radial-gradient(circle, #b6d2fd, #a1cbfd, #88c4fc, #69bdfb, #3bb7f9);
+}
+footer {
+	/* position: fixed; */
+	bottom:1px;
+	background-color: lightgray;
+}

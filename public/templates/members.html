@@ -1,0 +1,39 @@
+<div ng-controller="memCtrl">
+    CBNO : <input type="text" ng-model="cb.cbno">
+    <label>Name</label><input type="text" name="Name" ng-model="member.Name">
+    <label>GNO</label><input type="number" name="GNO" ng-model="member.GNO">
+    <button ng-click="AddMember(member)">Add</button>
+    <p>{{msg}}</p>
+    <hr>
+    <label>search</label> <input type="text" ng-model="searchtext.Name" placeholder="Search Text">
+
+    <table>
+        <caption>Member Data</caption>
+        <tr>
+            <th ng-click="sortData('Name')" > Name <div ng-class = "getSortClass('Name')"></div> </th>
+            <th ng-click="sortData('GNO')" > GNO <div ng-class = "getSortClass('GNO')"></div> </th>
+            <th ng-click="sortData('MonthLimit')" > MonthLimit <div ng-class = "getSortClass('MonthLimit')"></div> </th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="m in members | filter:searchtext | orderBy:sortcol:sortdesc ">
+            <td ng-hide="a">{{m.Name}}</td>
+            <td ng-show="a"><input type="text" ng-model="m.Name"></td>
+
+            <td ng-hide="a">{{m.GNO}}</td>
+            <td ng-show="a"><input type="text" ng-model="m.GNO" size="6"e></td>
+
+            <td ng-hide="a">{{m.MonthLimit | currency : "&#8377;" }}</td>
+            <td ng-show="a"><input type="number" ng-model="m.MonthLimit" size="6"></td>
+
+
+            <td> {{$index}}</td>
+            <td>
+                <span class="btn btn-info" ng-hide="a" ng-click="a=!a">Edit</span>
+                <span class="btn btn-success" ng-show="a" ng-click="UpdateMem(m, $index); a=!a">Update</span>
+                <span class="btn btn-danger" ng-show="a" ng-click="a=!a">Cancel</span>
+
+            </td>
+        </tr>
+    </table>
+</div>
