@@ -12,17 +12,18 @@
                     <form  class="form" method="post" action="/fileupload" enctype="multipart/form-data">
                         <div class="form-group">
                             <label for="subject">Subject</label>
-                            <input type="text"  name="subject" class="form-control rounded-0" pattern="[0-9A-Za-z ?*&]{3,90}"  maxlength="90" required = false>
+                            <input type="text"  name="subject" class="form-control rounded-0" pattern="[0-9A-Za-z ?*&]{3,90}"  maxlength="90" required 
+                            title="Special Chars single quote and double quote not a not allowed ">
                         </div>
                         <div class="form-group">
                             <label for="">Letter No</label>
                             <div class="row">
                                 <div class="col-9">
-                                    <input type="text"  class="form-control rounded-0"   required = false  maxlength="45"
+                                    <input type="text"  class="form-control rounded-0"   required  maxlength="45"
                                     name="letterNo" placeholder="Letter No">
                                 </div>
                                 <div class="col-3">
-                                    <input type="date" class="form-control rounded-0" required = false 
+                                    <input type="date" class="form-control rounded-0" required 
                                    name="letterDt" >
     
                                 </div>
@@ -33,7 +34,7 @@
                             <label for="">Letter Uploading Section</label>
                             <div class="row">
                                 <div class="col-4">
-                                    <input type="text"  class="form-control rounded-0" required = false 
+                                    <input type="text"  class="form-control rounded-0" required 
                                     name="section" placeholder="Section Name" list="sections">
                                     <datalist id="sections">
                                         <option value="Admin">
