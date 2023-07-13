@@ -1,6 +1,7 @@
 
-.container {
-	background-image: radial-gradient(circle, #b6d2fd, #a1cbfd, #88c4fc, #69bdfb, #3bb7f9);
+.container-bg {
+	background-image: radial-gradient(circle, #b6d2fd, #cafda1, #fcd788, #fb8b69, #f93bd0);
+	border-radius: 15px;
 }
 footer {
 	/* position: fixed; */

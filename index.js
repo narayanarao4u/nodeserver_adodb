@@ -16,9 +16,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-const router = require('./routes/route')
-app.use('/', router);
-
+/*
 const ADODB = require('node-adodb');
 const connMDB = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=bsnl1.mdb;');
 app.get('/api',(req,res)=>{
@@ -27,9 +25,17 @@ app.get('/api',(req,res)=>{
             .catch(error => {})
 })
 
-
-
 console.log(path.join(__dirname,'public'));
+*/
+
+const router = require('./routes/route')
+app.use('/', router);
+
+const api_router = require('./routes/api_route')
+app.use('/api_router', api_router);
+
+const api_file = require('./routes/api_file_route')
+app.use('/api_file', api_file);
 
 const port = 3003;
 app.listen(port, ()=>{

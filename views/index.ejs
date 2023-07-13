@@ -1,6 +1,6 @@
 <% include partials/header %>
 <% include partials/navbar1 %>
- <div class="container">
+ <div class="container-fluid px-4">
     <h3><%= title %></h3>
 <table id="example" class="display" style="width:100%">
     <thead>
@@ -26,7 +26,10 @@
                 </td>
                 <% if (!locals.page) { %>
                 <td>
-                    <%= row.uploadSection %>
+                    <a href="section/<%=row.uploadSection%>" target="_blank">
+                        <%= row.uploadSection %>
+                    </a>
+                    
                 </td>
                 <% } %> 
             </tr>
