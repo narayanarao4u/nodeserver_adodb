@@ -1,0 +1,91 @@
+<% include partials/header %>
+<% include partials/navbar1 %>
+ <div class="container-fluid px-4">
+
+    <h3><%= title %></h3>
+<table id="example" class="display" style="width:80%">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Subject</th>
+            <% if (!locals.page) { %>
+            <th>Section</th>
+            <% } %> 
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% rows.forEach(function(row){ %>
+            <tr>
+                <td>
+                    <%= row.upload_date %>
+                </td>
+                <td>
+                    <a href="<%= row.letterlink%>" target="_blank">
+                        <%= row.subject%>
+                    </a>
+                </td>
+                <% if (!locals.page) { %>
+                <td>
+                    <a href="/section/<%=row.uploadSection%>" target="_blank">
+                        <%= row.uploadSection %>
+                   </a>
+                    
+                </td>
+                <td>
+                    <button class="btn btn-danger delbtn" dt-lrno=<%= row.letterNo%> dt-sub='<%= row.subject %>'> 
+                        <i class="fa fa-trash-o fa-lg"></i> Delete
+                    </button>
+                </td>
+                <% } %> 
+                
+            </tr>
+            <%})%>
+    </tbody>
+    
+</table>
+
+</div>
+<% include partials/footerscripts %>
+<script>
+   $(document).ready(function () {
+       $('#example').DataTable({
+        order: [[0, 'desc']],
+       });
+
+       
+       $('.delbtn').click(function(){
+        let ltno = $(this).attr('dt-lrno');
+        let sub= $(this).attr('dt-sub');
+        deleteConfirm(ltno,sub);
+
+       })
+
+       function deleteConfirm(letterNo, subject) {
+        bootbox.confirm({
+            title: 'Would you like to delete this letter?',
+            message: subject,
+            backdrop: true,
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                // console.log('Letter No' + letterNo, subject);
+                window.location.href = `/delete/${letterNo}`;
+            }
+        });
+
+    }
+   });
+
+
+
+</script>
+<% include partials/footer %>

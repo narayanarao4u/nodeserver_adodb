@@ -16,8 +16,8 @@ router.use(fileUpload({
 
 router.get('/',(req,res)=>{
 
-    let sql = `select top 200 upload_date,subject,letterlink, uploadSection from letterdata
-          where  uploadType <> 'page' order by letterNo desc  `
+    let sql = `select top 200  upload_date,subject,letterlink, uploadSection from letterdata
+          where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `
 
     connMDB.query(sql)
             .then(data => {
@@ -28,6 +28,36 @@ router.get('/',(req,res)=>{
             .catch(error => {})
 })
 
+router.get('/delete',(req,res)=>{
+
+  let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
+        where  uploadType <> 'page'  and delStatus=0 order by letterNo desc  `
+
+  connMDB.query(sql)
+          .then(data => {
+              res.render('Delete',{
+                  title:"Delete Letters ",
+                  rows:data})
+          })
+          .catch(error => {})
+})
+
+router.get('/delete/:letterNo',(req,res)=>{
+
+  let letterNo = req.params.letterNo;
+
+
+  let sql = `update letterdata set delStatus = 1  where  letterNo = ${letterNo}  `
+
+  connMDB.execute(sql)
+          .then(data => {
+              res.redirect('/')
+          })
+          .catch(error => {})
+})
+
+
+
 router.get('/section/:section',(req,res)=>{
   let param = req.params.section
 
@@ -36,7 +66,7 @@ router.get('/section/:section',(req,res)=>{
   // order by letterNo desc  `
 
   let sql = `select  upload_date,subject,letterlink, unit from letterdata   
-    where uploadSection ='${req.params.section}'           
+    where uploadSection ='${req.params.section}'  and delStatus=0     
   order by letterNo desc  `
 
     connMDB.query(sql)
