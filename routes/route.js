@@ -3,21 +3,45 @@ const router = express.Router()
 const fileUpload = require("express-fileupload");
 const path = require("path");
 
+const cookieParser = require("cookie-parser");
+const sessions = require('express-session');
+//https://www.section.io/engineering-education/session-management-in-nodejs-using-expressjs-and-express-session/
+const oneDay = 1000 * 60 * 5;
+
 const ADODB = require('node-adodb');
 // const connMDB = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source="./bsnl1.mdb";');
 const connMDB =  ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\\website\\inventory\\bsnl1.mdb;');
 // const connMDB =  ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=G:\\bsnl1.mdb;');
 
-console.log('loading router');
+
+//username and password
+const myusername = 'sdeit'
+const mypassword = 'bsnl#321'
+
+// a variable to save a session
+var session;
+
 
 router.use(fileUpload({
     createParentPath: true,
   }));
 
+router.use(sessions({
+    secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
+    saveUninitialized:true,
+    cookie: { maxAge: oneDay },
+    resave: false
+}));
+
+router.use(cookieParser());
+
+
 router.get('/',(req,res)=>{
 
     let sql = `select top 200  upload_date,subject,letterlink, uploadSection from letterdata
           where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `
+
+          // console.log(req.ip);
 
     connMDB.query(sql)
             .then(data => {
@@ -28,32 +52,55 @@ router.get('/',(req,res)=>{
             .catch(error => {})
 })
 
-router.get('/delete',(req,res)=>{
+router.get('/delete', (req, res) => {
 
-  let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
+  session = req.session;
+  if (session.userid) {
+
+    let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
         where  uploadType <> 'page'  and delStatus=0 order by letterNo desc  `
 
-  connMDB.query(sql)
-          .then(data => {
-              res.render('Delete',{
-                  title:"Delete Letters ",
-                  rows:data})
-          })
-          .catch(error => {})
+    connMDB.query(sql)
+      .then(data => {
+        res.render('Delete', {
+          title: "Delete Letters ",
+          rows: data
+        })
+      })
+      .catch(error => { })
+  } else {
+    res.render('login',{title:"Login"})
+  }
+
+
+})
+
+router.post('/delete',(req,res) => {
+  if(req.body.userid === myusername && req.body.pwd === mypassword){
+    session=req.session;
+    session.userid=req.body.userid;   
+  };
+  res.redirect('/delete')
 })
 
 router.get('/delete/:letterNo',(req,res)=>{
+  session = req.session;
+  if (session.userid) {    
 
   let letterNo = req.params.letterNo;
 
-
-  let sql = `update letterdata set delStatus = 1  where  letterNo = ${letterNo}  `
+  let sql = `update letterdata set delStatus = 1, reply='${req.ip}'  where  letterNo = ${letterNo}  `
 
   connMDB.execute(sql)
           .then(data => {
               res.redirect('/')
           })
           .catch(error => {})
+  } else {
+    res.render('login',{title:"Login"})
+  }
+ 
+
 })
 
 
@@ -104,9 +151,9 @@ router.post('/fileupload',(req,res) => {
       let fpath = `E:/website/vm_web/${path_part}`;
       let letterlink = `http://10.34.130.254/vm_web/${path_part}`
 
-      console.log('file', file);
-      console.log('letterlink', letterlink);
-      console.log('fpath', fpath);
+      // console.log('file', file);
+      // console.log('letterlink', letterlink);
+      // console.log('fpath', fpath);
 
       file.mv(fpath, (err) => {
         if (err) {
@@ -115,8 +162,10 @@ router.post('/fileupload',(req,res) => {
         
         let letterdate = body.letterNo + '  ' + body.letterDt;
 
-        let sql = `insert into letterdata(upload_date,subject,letterlink, uploadSection, uploadType,letterdate) 
-                    values('${body.letterDt}','${body.subject}','${letterlink}','${body.section}','${body.uploadType}','${letterdate}')                              
+      //reply='${req.ip}'  
+
+        let sql = `insert into letterdata(upload_date,subject,letterlink, uploadSection, uploadType,letterdate, forward_comments ) 
+                    values('${body.letterDt}','${body.subject}','${letterlink}','${body.section}','${body.uploadType}','${letterdate}', '${req.ip}')                              
           `;
           
           connMDB.execute(sql).then(data => {

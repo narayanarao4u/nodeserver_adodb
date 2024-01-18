@@ -17,7 +17,11 @@
             <tr>
 
                 <td>
-                    <%= row.upload_date.substring(0,10) %>
+                    <% date = new Date( row.upload_date);
+                       date.setHours(date.getHours() + 5, date.getMinutes() + 30);
+                       formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${ date.getDate()}`; 
+                     %>
+                    <%= formattedDate  %>
                 </td>
                 <td>
                     <a href="<%= row.letterlink%>" target="_blank">
@@ -43,7 +47,12 @@
 <script>
    $(document).ready(function () {
        $('#example').DataTable({
-        order: [[0, 'desc']],
+        order: [[0, 'desc']],        
+        "iDisplayLength" : 20,
+        lengthMenu: [
+            [20, 40, 50, -1],
+            [20, 40, 50, 'All']
+        ]
        });
    });
 </script>

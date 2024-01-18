@@ -1,0 +1,6 @@
+Welcome to Node.js v18.16.1.
+Type ".help" for more information.
+> loading router
+loading router
+Express api is running from 3003
+[Object: null prototype] { userid: 'adfsad', pwd: 'asdfasdf' }
