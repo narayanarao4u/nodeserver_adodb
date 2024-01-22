@@ -4,7 +4,7 @@
 
   <div class=" row pt-2 ">
     
-    <form action="/delete" method="post" class="card  mx-auto" >
+    <form action="/login" method="post" class="card  mx-auto" >
       <div class="card-header">
         <h3 class="mb-0">Admin Login</h3>
       </div>
@@ -17,7 +17,9 @@
           <label for="pwd">Password:</label>
           <input type="password" class="form-control" placeholder="Enter password" id="pwd" name="pwd">
         </div>
+        <input type="hidden" id="url" name="url" value="<%=url%>">
         <button type="submit" class="btn btn-primary">Submit</button>
+        
       </div>
   </form>
   </div>

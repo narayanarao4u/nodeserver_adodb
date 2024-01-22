@@ -26,6 +26,7 @@ router.use(fileUpload({
     createParentPath: true,
   }));
 
+router.use(cookieParser());
 router.use(sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
     saveUninitialized:true,
@@ -33,10 +34,11 @@ router.use(sessions({
     resave: false
 }));
 
-router.use(cookieParser());
 
 
-router.get('/',(req,res)=>{
+
+
+router.get('/',  (req,res)=>{
 
     let sql = `select top 200  upload_date,subject,letterlink, uploadSection from letterdata
           where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `
@@ -69,18 +71,10 @@ router.get('/delete', (req, res) => {
       })
       .catch(error => { })
   } else {
-    res.render('login',{title:"Login"})
+    res.render('login',{title:"Login", url:"delete"})
   }
 
 
-})
-
-router.post('/delete',(req,res) => {
-  if(req.body.userid === myusername && req.body.pwd === mypassword){
-    session=req.session;
-    session.userid=req.body.userid;   
-  };
-  res.redirect('/delete')
 })
 
 router.get('/delete/:letterNo',(req,res)=>{
@@ -97,11 +91,20 @@ router.get('/delete/:letterNo',(req,res)=>{
           })
           .catch(error => {})
   } else {
-    res.render('login',{title:"Login"})
+    res.render('login',{title:"Login",url:"delete"})
   }
  
-
 })
+
+
+router.post('/login',(req,res) => {
+  if(req.body.userid === myusername && req.body.pwd === mypassword){
+    session=req.session;
+    session.userid=req.body.userid;   
+  };
+  res.redirect(`/${req.body.url}`)
+})
+
 
 
 
@@ -128,7 +131,15 @@ router.get('/section/:section',(req,res)=>{
 })
 
 router.get('/fileupload', (req,res)=>{
+  session = req.session;
+  if (session.userid) {
     res.render('fileupload',{title:"Letter Upload"})
+  } else {
+    res.render('login',{title:"Login", url:'fileupload'})
+  }
+
+  // res.render('fileupload',{ur:"Letter Upload"})
+
 })
 
 router.post('/fileupload',(req,res) => {
