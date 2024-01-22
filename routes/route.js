@@ -46,9 +46,6 @@ router.use(
 router.get("/", (req, res) => {
   let sql = `select top 200  upload_date,subject,letterlink, uploadSection from letterdata
           where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `;
-
-  console.log(req.ip);
-
   connMDB
     .query(sql)
     .then((data) => {
@@ -62,87 +59,74 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/delete", (req, res) => {
-  session = req.session;
-  if (session.userid) {
-    let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
+router.get("/delete", Auth, (req, res) => {
+  let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
         where  uploadType <> 'page'  and delStatus=0 order by letterNo desc  `;
-
-    connMDB
-      .query(sql)
-      .then((data) => {
-        res.render("Delete", {
-          title: "Delete Letters ",
-          rows: data,
-        });
-      })
-      .catch((error) => {});
-  } else {
-    res.render("login", { title: "Login", url: "delete" });
-  }
-});
-
-router.get("/delete/:letterNo", (req, res) => {
-  session = req.session;
-  if (session.userid) {
-    let letterNo = req.params.letterNo;
-
-    let sql = `update letterdata set delStatus = 1, reply='${req.ip}'  where  letterNo = ${letterNo}  `;
-
-    connMDB
-      .execute(sql)
-      .then((data) => {
-        res.redirect("/");
-      })
-      .catch((error) => {});
-  } else {
-    res.render("login", { title: "Login", url: "delete" });
-  }
-});
-
-router.post("/login", (req, res) => {
-  if (req.body.userid === myusername && req.body.pwd === mypassword) {
-    session = req.session;
-    session.userid = req.body.userid;
-  }
-  res.redirect(`/${req.body.url}`);
-});
-
-router.get("/section/:section", (req, res) => {
-  let param = req.params.section;
-
-  // let sql = `select  upload_date,subject,letterlink, unit from letterdata
-  //   where uploadSection ='${req.params.section}' and  uploadType <> 'letter'
-  // order by letterNo desc  `
-
-  let sql = `select  upload_date,subject,letterlink, unit from letterdata   
-    where uploadSection ='${req.params.section}'  and delStatus=0     
-  order by letterNo desc  `;
 
   connMDB
     .query(sql)
     .then((data) => {
-      res.render("index", {
-        title: "Section : " + param,
-        page: true,
+      res.render("Delete", {
+        title: "Delete Letters ",
         rows: data,
       });
     })
     .catch((error) => {});
 });
 
-router.get("/fileupload", (req, res) => {
-  session = req.session;
-  if (session.userid) {
-    res.render("fileupload", { title: "Letter Upload" });
-  } else {
-    res.render("login", { title: "Login", url: "fileupload" });
-  }
+router.get("/delete/:letterNo", Auth, (req, res) => {
+  let letterNo = req.params.letterNo;
 
-  // res.render('fileupload',{ur:"Letter Upload"})
+  let sql = `update letterdata set delStatus = 1, reply='${req.ip}'  where  letterNo = ${letterNo}  `;
+
+  connMDB
+    .execute(sql)
+    .then((data) => {
+      res.redirect("/");
+    })
+    .catch((error) => {
+      res.send({ error: error });
+    });
 });
 
-router.post("/fileupload", (req, res) => {
+
+
+router.get("/section/", SectionLetters);
+router.get("/section/:section", SectionLetters);
+
+function SectionLetters(req, res) {
+  let section = req.params.section || "Admin";
+
+  console.log(section);
+
+  // let sql = `select  upload_date,subject,letterlink, unit from letterdata
+  //   where uploadSection ='${req.params.section}' and  uploadType <> 'letter'
+  // order by letterNo desc  `
+
+  let sql = `select  upload_date,subject,letterlink, unit from letterdata   
+    where uploadSection ='${section}'  and delStatus=0     
+  order by letterNo desc  `;
+
+  connMDB
+    .query(sql)
+    .then((data) => {
+      res.render("index", {
+        title: "Section : " + section,
+        page: true,
+        rows: data,
+      });
+    })
+    .catch((error) => {});
+}
+
+router.get("/fileupload", Auth , (req, res) => {
+
+    res.render("fileupload", { title: "Letter Upload" });
+
+
+});
+
+router.post("/fileupload", Auth,(req, res) => {
   if (!req.files) {
     return res.status(400).send("No files were uploaded.");
   }
@@ -192,5 +176,26 @@ router.post("/fileupload", (req, res) => {
       });
   });
 });
+
+router.post("/login", (req, res) => {
+  if (req.body.userid === myusername && req.body.pwd === mypassword) {
+    session = req.session;
+    session.userid = req.body.userid;
+  }
+  res.redirect(`${req.body.url}`);
+});
+
+router.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+})
+
+function Auth(req, res, next) {
+  if (req.session.userid) {
+    next();
+  } else {
+    res.render("login", { title: "Login", url: req.originalUrl });
+  }
+}
 
 module.exports = router;

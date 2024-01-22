@@ -28,6 +28,8 @@ app.get('/api',(req,res)=>{
 console.log(path.join(__dirname,'public'));
 */
 
+app.use(logger);
+
 const router = require('./routes/route')
 app.use('/', router);
 
@@ -37,7 +39,13 @@ app.use('/api_router', api_router);
 const api_file = require('./routes/api_file_route')
 app.use('/api_file', api_file);
 
+function logger(req,res,next){
+    console.log(`${req.ip} -> ${req.originalUrl}`);
+    next();
+}
+
+
 const port = 3003;
 app.listen(port, ()=>{
-    console.log(`Express api is running from ${port}`)
+    console.log(`Express api is running from  http://localhost:${port}`)
 })
