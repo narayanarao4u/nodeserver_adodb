@@ -11,6 +11,7 @@ const sessions = require("express-session");
 const oneDay = 1000 * 60 * 5;
 
 const ADODB = require("node-adodb");
+const { log } = require("console");
 // const connMDB = ADODB.open(
 //   'Provider=Microsoft.Jet.OLEDB.4.0;Data Source="./bsnl1.mdb";'
 // );
@@ -44,7 +45,7 @@ router.use(
 );
 
 router.get("/", (req, res) => {
-  let sql = `select top 200  upload_date,subject,letterlink, uploadSection from letterdata
+  let sql = `select top 200 letterNo,  upload_date,subject,letterlink, uploadSection,  to_seccode from letterdata
           where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `;
   connMDB
     .query(sql)
@@ -60,7 +61,7 @@ router.get("/", (req, res) => {
 });
 
 router.get("/delete", Auth, (req, res) => {
-  let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata
+  let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection, to_seccode from letterdata
         where  uploadType <> 'page'  and delStatus=0 order by letterNo desc  `;
 
   connMDB
@@ -89,7 +90,20 @@ router.get("/delete/:letterNo", Auth, (req, res) => {
     });
 });
 
+router.get("/clicked/:letterNo",  (req, res) => {
+  let letterNo = req.params.letterNo;
+  let sql = `update letterdata set to_seccode = to_seccode +1   where  letterNo = ${letterNo}  `;
 
+  connMDB
+    .execute(sql)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      res.send({ error: error });
+    });
+  
+})
 
 router.get("/section/", SectionLetters);
 router.get("/section/:section", SectionLetters);
@@ -188,6 +202,11 @@ router.post("/login", (req, res) => {
 router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
+})
+
+
+router.get("*", (req, res) => {
+  res.render("page404", { title: req.originalUrl });
 })
 
 function Auth(req, res, next) {
