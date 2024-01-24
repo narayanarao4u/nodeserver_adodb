@@ -1,9 +1,14 @@
 # .env file
 
-this is for office PC
+> node  version  v18.16.1
 
-DB_PATH=E:\\website\\inventory\\bsnl1.mdb; 
+> **this is for office PC**
+<code>
+    DB_PATH=E:\\website\\inventory\\bsnl1.mdb;
+</code>
 
-for local
+> **for local**
+<code>
+   DB_PATH=bsnl1.mdb
+</code>
 
-DB_PATH=bsnl1.mdb

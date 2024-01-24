@@ -11,19 +11,14 @@ const sessions = require("express-session");
 const oneDay = 1000 * 60 * 5;
 
 const ADODB = require("node-adodb");
-const { log } = require("console");
-// const connMDB = ADODB.open(
-//   'Provider=Microsoft.Jet.OLEDB.4.0;Data Source="./bsnl1.mdb";'
-// );
+
 const connMDB = ADODB.open(
   `Provider=Microsoft.Jet.OLEDB.4.0;Data Source=${process.env.DB_PATH};`
 );
 
-// const connMDB =  ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=G:\\bsnl1.mdb;');
 
-//username and password
-const myusername = "sdeit";
-const mypassword = "bsnl#321";
+const users = require('../jsonDB/db.json').users;
+
 
 // a variable to save a session
 var session;
@@ -192,7 +187,11 @@ router.post("/fileupload", Auth,(req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  if (req.body.userid === myusername && req.body.pwd === mypassword) {
+  let user = users.find(x => x.user === req.body.userid && x.password ===  req.body.pwd )
+  console.log(user);
+
+  // if (req.body.userid === myusername && req.body.pwd === mypassword) {
+  if(user) {
     session = req.session;
     session.userid = req.body.userid;
   }

@@ -16,17 +16,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
-/*
-const ADODB = require('node-adodb');
-const connMDB = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=bsnl1.mdb;');
-app.get('/api',(req,res)=>{
-    connMDB.query('select top 10 * from letterdata')
-            .then(data => res.json(data))
-            .catch(error => {})
-})
-
-console.log(path.join(__dirname,'public'));
-*/
 
 app.use(logger);
 
@@ -39,9 +28,24 @@ app.use('/api_router', api_router);
 const api_file = require('./routes/api_file_route')
 app.use('/api_file', api_file);
 
-function logger(req,res,next){
-    console.log(`${req.ip} -> ${req.originalUrl}`);
-    next();
+
+
+function logger(req, res, next) {
+  const date = new Date();
+  const formattedDate = date
+    .toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    })
+    .replace(/\//g, "-");
+
+  console.log(`${formattedDate} => ${req.ip} => ${req.originalUrl}`);
+  next();
 }
 
 
