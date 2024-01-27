@@ -11,14 +11,13 @@ const sessions = require("express-session");
 const oneDay = 1000 * 60 * 5;
 
 const ADODB = require("node-adodb");
+const { log } = require("console");
 
 const connMDB = ADODB.open(
   `Provider=Microsoft.Jet.OLEDB.4.0;Data Source=${process.env.DB_PATH};`
 );
 
-
-const users = require('../jsonDB/db.json').users;
-
+const users = require("../jsonDB/db.json").users;
 
 // a variable to save a session
 var session;
@@ -85,7 +84,7 @@ router.get("/delete/:letterNo", Auth, (req, res) => {
     });
 });
 
-router.get("/clicked/:letterNo",  (req, res) => {
+router.get("/clicked/:letterNo", (req, res) => {
   let letterNo = req.params.letterNo;
   let sql = `update letterdata set to_seccode = to_seccode +1   where  letterNo = ${letterNo}  `;
 
@@ -97,8 +96,7 @@ router.get("/clicked/:letterNo",  (req, res) => {
     .catch((error) => {
       res.send({ error: error });
     });
-  
-})
+});
 
 router.get("/section/", SectionLetters);
 router.get("/section/:section", SectionLetters);
@@ -128,14 +126,11 @@ function SectionLetters(req, res) {
     .catch((error) => {});
 }
 
-router.get("/fileupload", Auth , (req, res) => {
-
-    res.render("fileupload", { title: "Letter Upload" });
-
-
+router.get("/fileupload", Auth, (req, res) => {
+  res.render("fileupload", { title: "Letter Upload" });
 });
 
-router.post("/fileupload", Auth,(req, res) => {
+router.post("/fileupload", Auth, (req, res) => {
   if (!req.files) {
     return res.status(400).send("No files were uploaded.");
   }
@@ -187,11 +182,13 @@ router.post("/fileupload", Auth,(req, res) => {
 });
 
 router.post("/login", (req, res) => {
-  let user = users.find(x => x.user === req.body.userid && x.password ===  req.body.pwd )
+  let user = users.find(
+    (x) => x.user === req.body.userid && x.password === req.body.pwd
+  );
   console.log(user);
 
   // if (req.body.userid === myusername && req.body.pwd === mypassword) {
-  if(user) {
+  if (user) {
     session = req.session;
     session.userid = req.body.userid;
   }
@@ -201,12 +198,60 @@ router.post("/login", (req, res) => {
 router.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
-})
+});
+
+//#region Users
+router.get("/users", async (req, res) => {
+  try {
+    let hosturl = req.get("host").split(":")[0];
+    let url = `http://${hosturl}:3000/users`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    res.render("users", { title: "Users", users: data });
+  } catch (error) {
+    console.error(error.message);
+    console.log('start json-server jsonDB\db.json in another cmd prmpt');
+    res.status(500).send(`Server error ${error.message}`);
+  }
+});
+
+router.post("/users", async (req, res) => {
+  let hosturl = req.get("host").split(":")[0];
+  let url =""
+  let method = "PUT"
+
+  const data = req.body
+  
+  if(data.id){
+    url = `http://${hosturl}:3000/users/${data.id}`;
+    method = "PUT"
+  } else {
+    url = `http://${hosturl}:3000/users/`; 
+    method = "POST"
+  }
+ 
+  
+  
+  
+  const response = await fetch(url,{
+    method: method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  console.log(response.json());
+  res.redirect("/users");
+});
+//#endregion Users
 
 
 router.get("*", (req, res) => {
   res.render("page404", { title: req.originalUrl });
-})
+});
+
 
 function Auth(req, res, next) {
   if (req.session.userid) {

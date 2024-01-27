@@ -1,0 +1,45 @@
+<% include partials/header %> <% include partials/navbar1 %>
+
+<div class="container-sm">
+  <h2>Login user database</h2>
+  <div class="row m-1">
+    <div class="col">User</div>
+    <div class="col">Password</div>
+    <div class="col"></div>
+  </div>
+
+  <form class="form-inline" method="post">
+    <div class="row m-1">
+      <div class="col">      
+        <input type="text" class="form-control form-control-sm"   name="user" required minlength="3" >
+      </div>
+      <div class="col">
+        <input type="text" class="form-control form-control-sm"  name="password" required minlength="3" >
+      </div>
+      
+      <div class="col">
+        <button type="submit" class="btn btn-primary btn-sm">Add</button>
+      </div>
+  </div>
+  </form>
+
+
+  <% users.forEach(function(user) { %>
+  <form class="form-inline" method="post">
+    <div class="row m-1">
+    <div class="col">
+      <input type="hidden"  value = "<%= user.id %>" name="id" >
+      <input type="text" class="form-control form-control-sm" value = "<%= user.user %>"  name="user" required minlength="3" >
+    </div>
+    <div class="col">
+      <input type="text" class="form-control form-control-sm" value = "<%= user.password %>" name="password" required minlength="3" >
+    </div>
+    
+    <div class="col">
+      <button type="submit" class="btn btn-info btn-sm">update</button>
+    </div>
+  </div>
+  </form>
+  <% }) %>
+</div>
+<% include partials/footer %>
