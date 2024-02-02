@@ -201,23 +201,29 @@ router.get("/logout", (req, res) => {
 });
 
 //#region Users
-router.get("/users", async (req, res) => {
+router.get("/users", Auth, async (req, res) => {
   try {
-    let hosturl = req.get("host").split(":")[0];
-    let url = `http://${hosturl}:3000/users`;
+    if (req.session.userid === "sdeit") {
+      let hosturl = req.get("host").split(":")[0];
+      let url = `http://${hosturl}:3000/users`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-    const response = await fetch(url);
-    const data = await response.json();
-
-    res.render("users", { title: "Users", users: data });
+      res.render("users", { title: "Users", users: data });
+    } else {
+      res.send("you are not allowed to access this page");
+    }
   } catch (error) {
     console.error(error.message);
-    console.log('start json-server jsonDB\db.json in another cmd prmpt');
+    console.log("start json-server jsonDBdb.json in another cmd prmpt");
     res.status(500).send(`Server error ${error.message}`);
   }
 });
 
-router.post("/users", async (req, res) => {
+router.post("/users", Auth, async (req, res) => {
+
+  try {
+    
   let hosturl = req.get("host").split(":")[0];
   let url =""
   let method = "PUT"
@@ -231,10 +237,6 @@ router.post("/users", async (req, res) => {
     url = `http://${hosturl}:3000/users/`; 
     method = "POST"
   }
- 
-  
-  
-  
   const response = await fetch(url,{
     method: method,
     headers: {
@@ -244,7 +246,16 @@ router.post("/users", async (req, res) => {
   });
   console.log(response.json());
   res.redirect("/users");
-});
+    
+  } catch (error) {
+    console.error(error.message);
+    console.log("start json-server jsonDBdb.json in another cmd prmpt");
+    res.status(500).send(`Server error ${error.message}`);
+  }
+
+}
+
+);
 //#endregion Users
 
 
