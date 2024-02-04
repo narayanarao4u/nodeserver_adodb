@@ -22,12 +22,7 @@ const users = require("../jsonDB/db.json").users;
 // a variable to save a session
 var session;
 
-router.use(
-  fileUpload({
-    createParentPath: true,
-  })
-);
-
+router.use(fileUpload({createParentPath: true }));
 router.use(cookieParser());
 router.use(
   sessions({
@@ -38,7 +33,16 @@ router.use(
   })
 );
 
+router.use(function (req, res, next) {
+  
+  req.session.userid ?  res.locals.user = req.session.userid : res.locals.user = null;
+  next();
+
+ 
+})
+
 router.get("/", (req, res) => {
+
   let sql = `select top 200 letterNo,  upload_date,subject,letterlink, uploadSection,  to_seccode from letterdata
           where  uploadType <> 'page' and delStatus=0  order by letterNo desc  `;
   connMDB
