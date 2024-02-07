@@ -3,4 +3,5 @@
 *.mdb
 .env
 *.ldb
+*.json
 

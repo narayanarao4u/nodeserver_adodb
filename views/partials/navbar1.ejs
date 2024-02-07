@@ -1,6 +1,6 @@
 <header>
-  <nav class="navbar navbar-expand-lg navbar-dark  bg-dark">
-    <a class="navbar-brand" href="/">BSNL Vizag</a>
+  <nav class="navbar navbar-expand-sm navbar-dark  bg-dark">
+    <a class="navbar-brand" href="/">BSNL Vizag  </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -9,8 +9,15 @@
         <a class="nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
         <a class="nav-link" href="/fileupload">Letter Upload</a>        
       </div>
-      <div class="nav navbar-nav">
-        <a class="nav-link btn btn-outline-danger" href="/logout">Logout</a>
+      <div class="nav navbar-nav ">
+        <% if (locals.user) { %>
+          <div>
+            <span  class="badge badge-secondary mr-1">User : <%=user%></span>
+          </div>          
+          <a class="nav-link btn btn-outline-danger" href="/logout">Logout</a>
+        <% } %>  
+        
+      
       </div>
     </div>
   </nav>
