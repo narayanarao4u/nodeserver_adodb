@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express')
 const router = express.Router()
 const fileUpload = require("express-fileupload");
@@ -6,7 +7,7 @@ const path = require("path");
 const ADODB = require('node-adodb');
 const { log } = require('console');
 // const connMDB = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source="./bsnl1.mdb";');
-const connMDB =  ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=E:\\website\\inventory\\bsnl1.mdb;');
+const connMDB =  ADODB.open(`Provider=Microsoft.Jet.OLEDB.4.0;Data Source=${process.env.DB_PATH};`);
 // const connMDB =  ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=G:\\bsnl1.mdb;');
 
 console.log('loading router');
@@ -16,6 +17,7 @@ router.use(fileUpload({
   }));
 
 let selectcmd = " select top 200 letterNo, upload_date,subject,letterlink, uploadSection from letterdata "
+
 router.get('/',(req,res)=>{
 
     let sql = ` ${selectcmd} where  uploadType <> 'page' order by letterNo desc  `

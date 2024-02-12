@@ -1,0 +1,16 @@
+<% include partials/header %>
+  <% include partials/navbar1 %>
+    <script src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"></script>
+
+    <div class="container">
+      <h1>Service Directory</h1>
+      <input type="text" name="searchtext" class="form-control" hx-get="/api-excel/telephone"
+        hx-trigger="keyup changed delay:500ms" hx-target="#search-results" placeholder="Search...">
+      <div id="search-results" hx-get="/api-excel/telephone" hx-trigger="load" hx-swap="innerHTML">
+
+      </div>
+
+      <% include partials/footerscripts %>
+        <% include partials/footer %>
