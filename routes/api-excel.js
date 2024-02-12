@@ -29,7 +29,7 @@ router.get("/telephone",  function (req, res) {
   let output = data.map((d) => {
     return `
       <div class="row">
-        <div class="col"> ${d["Name"]} </div>
+        <div class="col-4"> ${d["Name"]} </div>
         <div class="col"> ${d["Desgn"]} </div>
         <div class="col"> ${d["Phone"]} </div>
         <div class="col"> ${d["Mobile"]} </div>      
