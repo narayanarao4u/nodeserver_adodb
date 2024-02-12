@@ -19,14 +19,22 @@ app.use(bodyParser.json());
 
 app.use(logger);
 
-const router = require('./routes/route')
-app.use('/', router);
 
 const api_router = require('./routes/api_route')
 app.use('/api_router', api_router);
 
 const api_file = require('./routes/api_file_route')
 app.use('/api_file', api_file);
+
+let apiExcel = require("./routes/api-excel");
+app.use('/api-excel', apiExcel);
+
+app.get('/htmx', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/htmx/index.html'));
+});
+
+const router = require('./routes/route')
+app.use('/', router);
 
 
 

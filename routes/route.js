@@ -58,6 +58,10 @@ router.get("/", (req, res) => {
     });
 });
 
+router.get("/srvdir", (req, res) => {
+  res.render('srvdir', { title: "Server Directory" });
+})
+
 router.get("/delete", Auth, (req, res) => {
   let sql = `select top 200 letterNo, upload_date,subject,letterlink, uploadSection, to_seccode from letterdata
         where  uploadType <> 'page'  and delStatus=0 order by letterNo desc  `;

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMX </title>
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+</head>
+<body>
+    <div class="text-center">
+        <h1 class="text-2xl">HTMX</h1>
+    
+    <button class="bg-blue-500 text-white py-2 px-3 m-5 rounded-lg"
+        hx-get="https://jsonplaceholder.typicode.com/users"   
+        hx-trigger="click" 
+        hx-target="#pre1"
+        hx-swap="innerHTML"
+    >
+        Request Data
+    </button>
+
+
+    </div>
+    <pre id="pre1">
+
+    </pre>
+    <hr>
+    <div class="m-3">
+        <input type="text" name="searchtext"
+        class="border-2 border-gray-400 rounded-lg p-1 block w-1/3 m-auto"
+        hx-get="/api-excel/telephone"
+        
+        hx-trigger="keyup changed delay:500ms"
+       
+        hx-target="#search-results"
+        placeholder="Search..."
+        >
+        <div id="search-results"
+            hx-get="/api-excel/telephone"
+            hx-trigger="load" 
+            hx-swap="innerHTML"
+    
+            class="grid grid-cols-4"
+        >
+    
+        </div>
+    </div>
+
+        
+</body>
+</html>
